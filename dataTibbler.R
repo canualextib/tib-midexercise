@@ -1,23 +1,24 @@
 datapath = file.choose(new = FALSE)
 
-trasp = function(datapath)
+trasp = function(p)
 {
   # Check if file exists, useful?
-  if(!file.exists(datapath)) return("File non trovato")
+  if(!file.exists(p)) return("File non trovato")
   
   # Get the path for the final output
   # and check if the file is a csv
-  splpath = strsplit(datapath, split = "\\", fixed = TRUE, perl = FALSE, useBytes = FALSE)
+  splpath = strsplit(p, split = "\\", fixed = TRUE, perl = FALSE, useBytes = FALSE)
   filename = splpath[[1]][length(splpath[[1]])]
   splfile = strsplit(filename, split = ".", fixed = TRUE, perl = FALSE, useBytes = FALSE)
   endpath = nchar(filename)
-  fullpath = substr(datapath, 0, (nchar(datapath) - endpath))
+  fullpath = substr(p, 0, (nchar(p) - endpath))
   extens = splfile[[1]][length(splfile[[1]])]
   
   if(!extens == "csv") return("Formato file non corretto")
   
   # Reads the file, looks for the row with tag [Data]
-  wholedata = read.csv(datapath, header = FALSE)
+  library(tibble)
+  wholedata = read.csv(p, header = FALSE)
   wholedata = as_tibble(wholedata)
   datatag = which(wholedata=="[Data]")[1] + 1
   if(is.na(datatag)) return("Struttura file non corretta")
@@ -88,5 +89,11 @@ trasp = function(datapath)
 
 }
 
-trasp(datapath)
+if(!is.na(datapath))
+{
+  trasp(datapath)
+}else
+{
+  print("Operazione annullata")
+}
 
